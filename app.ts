@@ -6,7 +6,7 @@ import session from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { PrismaClient } from "./generated/prisma";
 import passport from "passport";
-import routerName from "./routes/routerName";
+import mdRouter from "./routes/mdRouter";
 
 const app = express();
 
@@ -43,7 +43,7 @@ const attachUser: RequestHandler = (req, res, next) => {
 };
 app.use(attachUser);
 
-app.use("/", routerName);
+app.use("/", mdRouter);
 
 const PORT = process.env.PORT || 3000;
 

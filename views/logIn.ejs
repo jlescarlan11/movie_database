@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Movie Database | Log In</title>
+  </head>
+  <body>
+    <!-- I just recycled this from my other works, feel free to modify (the colors is modified for theming too, but I still didn't include a theming yet.) -->
+    <main
+      class="container max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-8 p-8"
+    >
+      <div
+        class="sm:flex-1 flex flex-col sm:items-start items-center justify-center"
+      >
+        <h1 class="text-3xl sm:text-5xl font-bold">Movie Database</h1>
+        <img
+          src="/images/storifyLogo.svg"
+          class="max-w-72 select-none hidden sm:block"
+          alt="Logo of the movie Database."
+        />
+      </div>
+      <div
+        class="flex-1 flex flex-col sm:justify-center min-w-full sm:min-w-fit"
+      >
+        <form
+          action="/login"
+          method="POST"
+          class="border border-secondary p-4 min-w-full sm:p-8 rounded-lg"
+        >
+          <%- include("partials/errors") %>
+          <div class="mb-4">
+            <div class="flex flex-col flex-1 group mb-2">
+              <label
+                for="email"
+                class="text-xs font-medium text-text/80 group-focus-within:text-text mb-2"
+                >Email address</label
+              >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                title="Enter your email"
+                class="border border-secondary rounded-lg p-2 text-xs"
+                required
+              />
+            </div>
+
+            <div class="flex flex-col flex-1 group mb-2">
+              <div class="flex justify-between">
+                <label
+                  for="password"
+                  class="text-xs font-medium text-text/80 group-focus-within:text-text mb-2"
+                  >Password</label
+                >
+                <a
+                  href="/password-reset"
+                  class="text-xs font-medium text-text/80 hover:text-text mb-2"
+                  >Forgot password?</a
+                >
+              </div>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                title="Enter your password"
+                class="border border-secondary rounded-lg p-2 text-xs"
+                required
+              />
+            </div>
+
+            <div class="w-full flex">
+              <input
+                type="submit"
+                value="Log In"
+                class="mx-auto sm:flex-1 bg-accent hover:bg-accent/80 transition-all ease-in-out duration-200 p-2 rounded-lg font-medium"
+              />
+            </div>
+          </div>
+          <div class="text-center text-xs">
+            <p class="text-gray-600">
+              Don't have an account?
+              <a
+                href="/signup"
+                class="text-accent font-medium hover:text-accent-dark"
+                >Sign up now</a
+              >
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

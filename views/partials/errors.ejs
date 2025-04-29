@@ -1,0 +1,7 @@
+<% if (locals.errors) { %>
+<div class="border border-red p-4 rounded-xl mb-4">
+  <% for (const error of errors) { %>
+  <p class="text-red-400 text-xs">■ <%= error.msg %></p>
+  <% } %>
+</div>
+<% } %>
