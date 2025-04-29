@@ -14,9 +14,13 @@ npm install
 
 npm run prisma:generate (to migrate run "npm run prisma:migrate")
 
-## to build, run
+## to start, run
 
-npm run dev
+npm run start 
+
+## to build css, run
+
+npm run build-css
 
 ## if ganahan mo maview ang database, run
 
