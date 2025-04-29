@@ -2,6 +2,8 @@
 
 ## Clone Git Repo
 
+## Create a branch lang guys para madali ra macheck if naay errors. pwede ra mo make ug issue, then use sa title lang yung plan na gagawin ninyo, para dili mag conflict sa gagawin
+
 ## Run
 
 npm install
