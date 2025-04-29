@@ -1,7 +1,7 @@
 import type { PassportStatic } from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-import query from "../db/queries";
+import query from "../schema/queries";
 
 export default function initializePassport(passport: PassportStatic): void {
   passport.use(
@@ -25,7 +25,7 @@ export default function initializePassport(passport: PassportStatic): void {
     )
   );
 
-  passport.serializeUser((user, done) => done(null, (user as any).user_id));
+  passport.serializeUser((user, done) => done(null, (user as any).id));
   passport.deserializeUser(async (id: string, done) => {
     try {
       const user = await query.user.getById(id);
