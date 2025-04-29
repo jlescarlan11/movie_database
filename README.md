@@ -10,7 +10,7 @@ npm install
 
 ## run
 
-npx prisma generate (to migrate run npx prisma migrate dev)
+npm run prisma:generate (to migrate run npm prisma:migrate)
 
 ## to build, run
 
