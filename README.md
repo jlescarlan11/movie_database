@@ -15,3 +15,7 @@ npm run prisma:generate (to migrate run npm prisma:migrate)
 ## to build, run
 
 npm run dev
+
+## if ganahan mo maview ang database, run
+
+npm run prisma:studio
