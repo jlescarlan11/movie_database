@@ -157,6 +157,7 @@ export const logInValidate: RequestHandler = (req, res, next) => {
     // Render login page with validation errors
     return res.render("logIn", { errors: errors.array() });
   }
+  next();
 };
 
 export const logInPost = passport.authenticate("local", {
@@ -209,13 +210,15 @@ export const passwordResetConfirmPost: RequestHandler = async (
   next
 ) => {
   const errors = validationResult(req);
+  const { id } = req.params;
+  const { password } = req.body;
   if (!errors.isEmpty()) {
-    return res.render("PasswordResetConfirm", { errors: errors.array() });
+    return res.render("PasswordResetConfirm", {
+      errors: errors.array(),
+      id: req.params.id,
+    });
   }
   try {
-    const { id } = req.params;
-    const { password } = req.body;
-
     query.user.updatePassword({ id, password });
 
     res.redirect("/");
