@@ -1,10 +1,9 @@
-import type { RequestHandler } from "express";
-import query from "../schema/queries";
-import passport from "passport";
-import { body, validationResult } from "express-validator";
-import bcrypt from "bcryptjs";
+const query = require("../schema/queries");
+const passport = require("passport");
+const bcrypt = require("bcryptjs");
+const { body, validationResult } = require("express-validator");
 
-export const signUpValidation = [
+const signUpValidation = [
   body("firstName")
     .trim()
     .notEmpty()
@@ -34,7 +33,7 @@ export const signUpValidation = [
     .isEmail()
     .withMessage("Invalid email format")
     .normalizeEmail()
-    .custom(async (value: string) => {
+    .custom(async (value) => {
       const existing = await query.user.getByEmail(value);
       if (existing) {
         // reject if email already in the database
@@ -65,7 +64,7 @@ export const signUpValidation = [
     .withMessage("Passwords do not match"),
 ];
 
-export const PasswordResetValidation = [
+const PasswordResetValidation = [
   body("password")
     .trim()
     .notEmpty()
@@ -87,7 +86,7 @@ export const PasswordResetValidation = [
     .withMessage("Passwords do not match"),
 ];
 
-export const logInValidation = [
+const logInValidation = [
   body("email")
     .trim()
     .notEmpty()
@@ -117,73 +116,75 @@ export const logInValidation = [
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
-export const index: RequestHandler = async (req, res) => {
+exports.index = async (req, res) => {
   if (req.user) {
     return res.render("index");
   }
   res.redirect("/login");
 };
 
-export const signUpGet: RequestHandler = (req, res) => {
+exports.signUpGet = (req, res) => {
   res.render("signUp");
 };
 
-export const signUpPost: RequestHandler = async (req, res, next) => {
-  const errors = validationResult(req);
+exports.signUpPost = [
+  signUpValidation,
+  async (req, res, next) => {
+    const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.render("signup", { errors: errors.array() });
-  }
+    if (!errors.isEmpty()) {
+      return res.render("signup", { errors: errors.array() });
+    }
 
-  try {
-    const { firstName, lastName, email, password } = req.body;
-    console.log(req.body);
+    try {
+      const { firstName, lastName, email, password } = req.body;
+      console.log(req.body);
 
-    query.user.createUser({ firstName, lastName, email, password });
+      query.user.createUser({ firstName, lastName, email, password });
 
-    res.redirect("/");
-  } catch (err) {
-    next(err);
-  }
-};
+      res.redirect("/");
+    } catch (err) {
+      next(err);
+    }
+  },
+];
 
-export const logInGet: RequestHandler = (req, res) => {
+exports.logInGet = (req, res) => {
   res.render("logIn");
 };
 
-export const logInValidate: RequestHandler = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // Render login page with validation errors
-    return res.render("logIn", { errors: errors.array() });
-  }
-  next();
-};
+exports.logInValidate = [
+  logInValidation,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Render login page with validation errors
+      return res.render("logIn", { errors: errors.array() });
+    }
+    next();
+  },
+];
 
-export const logInPost = passport.authenticate("local", {
+exports.logInPost = passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/",
 });
 
-export const logOutGet: RequestHandler = (req, res, next) => {
+exports.logOutGet = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
     res.redirect("/");
   });
 };
 
-export const passwordResetRequestGet: RequestHandler = (req, res, next) => {
+exports.passwordResetRequestGet = (req, res, next) => {
   if (req.user) {
     return res.render("index");
   }
   res.render("passwordResetRequest");
 };
 
-export const passwordResetRequestPost: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
+exports.passwordResetRequestPost = async (req, res, next) => {
   try {
     const user = await query.user.getByEmail(req.body.email.trim());
     if (!user) {
@@ -197,32 +198,31 @@ export const passwordResetRequestPost: RequestHandler = async (
   }
 };
 
-export const passwordResetConfirmGet: RequestHandler = (req, res, next) => {
+exports.passwordResetConfirmGet = (req, res, next) => {
   if (req.user) {
     return res.render("index");
   }
   res.render("passwordResetConfirm", { id: req.params.id });
 };
 
-export const passwordResetConfirmPost: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
-  const errors = validationResult(req);
-  const { id } = req.params;
-  const { password } = req.body;
-  if (!errors.isEmpty()) {
-    return res.render("PasswordResetConfirm", {
-      errors: errors.array(),
-      id: req.params.id,
-    });
-  }
-  try {
-    query.user.updatePassword({ id, password });
+exports.passwordResetConfirmPost = [
+  PasswordResetValidation,
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    const { id } = req.params;
+    const { password } = req.body;
+    if (!errors.isEmpty()) {
+      return res.render("PasswordResetConfirm", {
+        errors: errors.array(),
+        id: req.params.id,
+      });
+    }
+    try {
+      query.user.updatePassword({ id, password });
 
-    res.redirect("/");
-  } catch (err) {
-    next(err);
-  }
-};
+      res.redirect("/");
+    } catch (err) {
+      next(err);
+    }
+  },
+];
