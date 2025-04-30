@@ -1,12 +1,11 @@
-import type { RequestHandler } from "express";
-import initializePassport from "./config/passport-config";
-import path from "node:path";
-import express from "express";
-import session from "express-session";
-import { PrismaSessionStore } from "@quixo3/prisma-session-store";
-import { PrismaClient } from "./generated/prisma";
-import passport from "passport";
-import mdRouter from "./routes/mdRouter";
+const path = require("path");
+const express = require("express");
+const session = require("express-session");
+const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+const { PrismaClient } = require("./generated/prisma");
+const passport = require("passport");
+const initializePassport = require("./config/passport-config");
+const mdRouter = require("./routes/mdRouter");
 
 const app = express();
 
@@ -21,7 +20,7 @@ app.use(
     cookie: {
       maxAge: 7 * 24 * 60 * 60 * 1000, // ms
     },
-    secret: process.env.SESSION_SECRET!,
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
     store: new PrismaSessionStore(new PrismaClient(), {
@@ -37,7 +36,7 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 // to localize the saved user.
-const attachUser: RequestHandler = (req, res, next) => {
+const attachUser = (req, res, next) => {
   res.locals.user = req.user;
   next();
 };

@@ -1,32 +1,14 @@
-import bcrypt from "bcryptjs";
-import { PrismaClient } from "../generated/prisma";
+const bcrypt = require("bcryptjs"); // bcrypt.js exports via module.exports :contentReference[oaicite:0]{index=0}
+const { PrismaClient } = require("../generated/prisma"); // destructure PrismaClient from the generated client :contentReference[oaicite:1]{index=1}
 const prisma = new PrismaClient();
 
-type CreateUserInput = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-type UpdatePasswordInput = {
-  id: string;
-  password: string;
-};
-
-const query = {
+module.exports = {
   user: {
     getAll: async () => await prisma.user.findMany(),
-    getById: async (id: string) =>
-      await prisma.user.findUnique({ where: { id } }),
-    getByEmail: async (email: string) =>
+    getById: async (id) => await prisma.user.findUnique({ where: { id } }),
+    getByEmail: async (email) =>
       await prisma.user.findUnique({ where: { email } }),
-    createUser: async ({
-      firstName,
-      lastName,
-      email,
-      password,
-    }: CreateUserInput) => {
+    createUser: async ({ firstName, lastName, email, password }) => {
       // 1. Hash the plain‐text password
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -39,7 +21,7 @@ const query = {
         },
       });
     },
-    updatePassword: async ({ id, password }: UpdatePasswordInput) => {
+    updatePassword: async ({ id, password }) => {
       const hashedPassword = await bcrypt.hash(password.trim(), 10);
 
       await prisma.user.update({
@@ -53,5 +35,3 @@ const query = {
     },
   },
 };
-
-export default query;
