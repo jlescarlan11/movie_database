@@ -11,7 +11,7 @@ module.exports = function initializePassport(passport) {
       },
       async (email, password, done) => {
         try {
-          const user = await query.user.getByEmail(email);
+          const user = await query.user.getByEmail(email.toLocaleLowerCase());
           if (!user) return done(null, false, { message: "Incorrect email" });
           const match = await bcrypt.compare(password, user.password);
           if (!match)
